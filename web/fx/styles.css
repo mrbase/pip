@@ -1,0 +1,31 @@
+body {
+    padding-top: 50px;
+}
+.starter-template {
+    padding: 40px 15px;
+}
+.wrapper {
+    padding: 9px 14px;
+    margin-bottom: 14px;
+    background-color: #f7f7f9;
+    border: 1px solid #e1e1e8;
+    border-radius: 4px;
+}
+.bg-danger {
+    padding: 15px;
+    font-size: 2em;
+}
+.bg-danger i {
+    color: #f00;
+    font-size: 2.5em;
+    margin-left: 20px;
+    float: left;
+    padding-right: 20px;
+}
+.bg-danger p {
+    padding-top: 10px;
+}
+
+.wrapper iframe {
+    border: 1px solid #000;
+}
