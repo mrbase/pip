@@ -14,7 +14,7 @@ $loader->register();
 $app = require __DIR__.'/../src/app.php';
 
 // Don't load the cache if we're on localhost.
-if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
+if ($_SERVER['REMOTE_ADDR'] == '127.0.0.2') {
     $app['debug'] = true;
     $app->run();
 } else {

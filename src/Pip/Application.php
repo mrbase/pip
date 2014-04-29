@@ -27,8 +27,8 @@ class Application extends SilexApplication
         $this->register(new UrlGeneratorServiceProvider());
 
         // Cache
-        $app['cache.path'] = __DIR__ . '/../../tmp/cache';
-        $app['http_cache.cache_dir'] = $app['cache.path'] . '/http';
+        $this['cache.path'] = __DIR__ . '/../../tmp/cache';
+        $this['http_cache.cache_dir'] = $this['cache.path'] . '/http';
 
         $this->register(new TwigServiceProvider(), [
             'twig.path' => __DIR__.'/../twig/templates',
