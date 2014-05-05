@@ -41,7 +41,7 @@ class Application extends SilexApplication
         // error handler.
         $sd = $sd = $ert = 1;
         $this->error(function (\Exception $e, $code) use ($sd, $sd, $ert) {
-            _log($e->getMessage());
+            error_log($e->getMessage());
 
             switch ($code) {
                 case 404:
