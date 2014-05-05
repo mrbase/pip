@@ -21,7 +21,17 @@ $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
 
 // front page
 $app->get('/', function(\Pip\Application $app) {
-    return $app['twig']->render('index.html.twig');
+    $default = '';
+    foreach ($app['job-map'] as $command => $options) {
+        if (isset($options['default']) && $options['default']) {
+            $default = $command;
+            break;
+        }
+    }
+
+    return $app['twig']->render('index.html.twig', [
+        'default_command' => $default
+    ]);
 });
 
 

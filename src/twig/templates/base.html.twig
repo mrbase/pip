@@ -30,7 +30,7 @@
                     </a>
                     <ul class="dropdown-menu jobs">
                         {% for job, data in jobs %}
-                        <li><a href="/run/{{ job }}">{{ data.name }}</a></li>
+                        <li><a href="/run/{{ job }}" class="job-{{ job }}">{{ data.name }}</a></li>
                         {% endfor %}
                     </ul>
                 </li>
@@ -48,6 +48,7 @@
 
 <script src="/vendors/jquery/dist/jquery.min.js"></script>
 <script src="/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+<script>var default_command = '{{ default_command|default('') }}';</script>
 <script src="/fx/scripts.js"></script>
 </body>
 </html>

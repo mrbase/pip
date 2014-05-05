@@ -13,4 +13,8 @@
         $iframe.prop('src', this.href);
 
     });
+
+    if ((undefined !== default_command) && default_command) {
+        $('.jobs a.job-'+default_command).click();
+    }
 })(jQuery);
