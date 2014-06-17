@@ -9,8 +9,32 @@
  */
 
 /** ----------------------------------------
- *  Add new jobs by adding an element to the
- *  array here.
+ * USERS
+ * -----------------------------------------
+ * ROLE_ADMIN
+ *  There should never be more than one admin
+ *  role, it gives access to creating other
+ *  users, so watch out :)
+ *
+ * ROLE_SUPERUSER
+ *  can do all an admin can, but not create
+ *  new users.
+ *
+ * ROLE_TECH
+ *  can do other stuff....
+ *
+ * ROLE_FOO
+ *  can do other stuff....
+ * -----------------------------------------
+ * ROLES
+ * -----------------------------------------
+ * Is just a shortcut list of all roles you
+ * create.
+ * -----------------------------------------
+ * JOBS
+ * -----------------------------------------
+ * Add new jobs by adding an element to the
+ * array here.
  *
  *  'safe-key' => [
  *    'name'    => 'Display name',
@@ -18,24 +42,52 @@
  *    'default' => true,
  *  ]
  *
- *  the "safe key" is used as url trigger, so
- *  jobs not defined below will not run.
+ * the "safe key" is used as url trigger, so
+ * jobs not defined below will not run.
  *
- *  "name" is a label that is used to display
- *  to the user in the job list.
+ * "name" is a label that is used to display
+ * to the user in the job list.
  *
- *  "cmd" is the command to run.
+ * "cmd" is the command to run.
  *
- *  If "default" is set to "true" this command
- *  will be run on load. Note, only one command
- *  can be run at a time, so we use the first
- *  if several is marked.
+ * If "default" is set to "true" this command
+ * will be run on load. Note, only one command
+ * can be run at a time, so we use the first
+ * if several is marked.
+ *
+ * Jobs are grouped by the roles that should
+ * be able to run these.
  * ----------------------------------------- */
 
 return [
-    'ping-google' => [
-        'name'    => 'Ping Google',
-        'cmd'     => 'ping -c 20 www.google.com',
-        'default' => true,
+    'users' => [
+        'admin' => [
+            ['ROLE_ADMIN', 'ROLE_SUPERUSER'],
+            '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg==' // foo
+        ],
     ],
-];;
+
+    'roles' => [
+        'ROLE_ADMIN',
+        'ROLE_SUPERUSER',
+        'ROLE_TECH',
+        // ....
+    ],
+
+    'jobs' => [
+        'ROLE_SUPERUSER,ROLE_TECH' => [
+            'ping-google' => [
+                'name'    => 'Ping Google',
+                'cmd'     => 'ping -c 20 www.google.com',
+                'default' => true,
+            ],
+        ],
+        'ROLE_SUPERUSER' => [
+            'secret-stuff' => [
+                'name'    => 'Secret stuff',
+                'cms'     => 'ls',
+                'default' => false,
+            ]
+        ],
+    ]
+];

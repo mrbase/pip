@@ -8,11 +8,28 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\HttpFoundation\Request;
+
+include __DIR__.'/Pip/utils.php';
+$config = include __DIR__.'/config.php';
+
 $app = new \Pip\Application();
-$app['job-map'] = include __DIR__.'/config.php';
+$app['jobs']  = $config['jobs'];
+$app['users'] = $config['users'];
+$app['roles'] = $config['roles'];
+
+$app->register(new Silex\Provider\SecurityServiceProvider(), [
+    'security.firewalls' => [
+        'app' => [
+            'pattern' => '^/',
+            'http'    => true,
+            'users'   => $app['users'],
+        ]
+    ]
+]);
 
 $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
-    $twig->addGlobal('jobs', $app['job-map']);
+    $twig->addGlobal('jobs', map_jobs($app));
     $twig->addExtension(new Twig_Extension_Debug());
 
     return $twig;
@@ -22,7 +39,7 @@ $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
 // front page
 $app->get('/', function(\Pip\Application $app) {
     $default = '';
-    foreach ($app['job-map'] as $command => $options) {
+    foreach (map_jobs($app) as $command => $options) {
         if (isset($options['default']) && $options['default']) {
             $default = $command;
             break;
@@ -38,11 +55,12 @@ $app->get('/', function(\Pip\Application $app) {
 // command runner
 $app->get('/run/{command}', function(\Pip\Application $app, $command) {
     // eject non defined jobs
-    if (empty($app['job-map'][$command])) {
+    $jobs = map_jobs($app);
+    if (empty($jobs[$command])) {
         return 'No such job defined! ("'.$command.'")';
     }
 
-    $command = $app['job-map'][$command]['cmd'];
+    $command = $jobs[$command]['cmd'];
 
     ob_end_clean();
     $stream = function () use ($command) {
@@ -65,5 +83,34 @@ $app->get('/run/{command}', function(\Pip\Application $app, $command) {
 
     return $app->stream($stream);
 });
+
+
+// create new user block
+$app->match('/add-user', function(Request $request, \Pip\Application $app) {
+    if ('GET' == $request->getMethod()) {
+        return $app['twig']->render('add-user.html.twig', ['roles' => $app['roles']]);
+    }
+
+    $username = $request->request->get('username');
+    $password = $request->request->get('password');
+    $roles    = $request->request->get('roles');
+
+    if (empty($username) || empty($password) || empty($roles)) {
+        return $app->redirect('/add-user');
+    }
+
+    $data = "
+      '".$username."' => [
+          ['".implode("','", $roles)."'],
+          '".$app['security.encoder.digest']->encodePassword($password, '')."' // ".$password."
+      ],";
+
+
+    return $app['twig']->render('add-user.html.twig', [
+        'roles'     => $app['roles'],
+        'user_data' => $data
+    ]);
+})
+->method('GET|POST');
 
 return $app;
